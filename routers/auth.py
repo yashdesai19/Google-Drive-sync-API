@@ -5,31 +5,36 @@ import os
 
 router = APIRouter()
 
-CLIENT_SECRET_FILE = "client_secret.json"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CLIENT_SECRET_FILE = os.path.join(BASE_DIR, "client_secret.json")
 
 SCOPES = ["https://www.googleapis.com/auth/drive"]
 
-@router.get("/login")
+REDIRECT_URI = "http://localhost:8000/auth/callback"
+
+
+@router.get("/login", description="Returns the Google OAuth login URL. Copy and open it in your browser to authenticate.")
 def login():
     flow = Flow.from_client_secrets_file(
         CLIENT_SECRET_FILE,
         scopes=SCOPES,
-        redirect_uri="http://localhost:8000/auth/callback"
+        redirect_uri=REDIRECT_URI
     )
 
     authorization_url, state = flow.authorization_url(
-        access_type='offline',
-        include_granted_scopes='true'
+        access_type="offline",
+        include_granted_scopes="true"
     )
 
-    return RedirectResponse(authorization_url)
+    return {"login_url": authorization_url, "state": state}
+
 
 @router.get("/callback")
 def callback(code: str):
     flow = Flow.from_client_secrets_file(
         CLIENT_SECRET_FILE,
         scopes=SCOPES,
-        redirect_uri="http://localhost:8000/auth/callback"
+        redirect_uri=REDIRECT_URI
     )
 
     flow.fetch_token(code=code)

@@ -14,7 +14,7 @@ def get_credentials(token: str):
     )
 
 
-# ✅ List Files
+# List Files
 @router.get("/files")
 def list_files(token: str):
     credentials = get_credentials(token)
@@ -28,7 +28,7 @@ def list_files(token: str):
     return results.get("files", [])
 
 
-# ✅ Upload File
+#  Upload File
 @router.post("/upload")
 def upload_file(token: str, file: UploadFile = File(...)):
     credentials = get_credentials(token)
@@ -52,7 +52,7 @@ def upload_file(token: str, file: UploadFile = File(...)):
     return uploaded_file
 
 
-# ✅ Delete File
+#  Delete File
 @router.delete("/delete/{file_id}")
 def delete_file(file_id: str, token: str):
     credentials = get_credentials(token)
@@ -63,7 +63,7 @@ def delete_file(file_id: str, token: str):
     return {"message": "File deleted successfully"}
 
 
-# ✅ Make File Public
+#  Make File Public
 @router.post("/make-public/{file_id}")
 def make_public(file_id: str, token: str):
     credentials = get_credentials(token)
